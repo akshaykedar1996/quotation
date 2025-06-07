@@ -1,0 +1,281 @@
+{% extends 'Employee/Emp_base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+  <style>
+    /* Stats Cards */
+    .stats {
+     display: flex;
+     justify-content: space-between;
+     margin-top: 20px;
+     flex-wrap: wrap;
+     gap: 20px;
+   }
+   .card {
+     background: white;
+     border-radius: 3px;
+     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+     flex: 1;
+     min-width: 250px;
+     text-align: center;
+     padding: 20px;
+   }
+   .card h3 {
+     font-size: 1.5rem;
+     color: rgb(5, 128, 228);
+   }
+   .card h6 {
+     font-size: 13px;
+     color: rgb(70, 68, 68);
+   }
+   /* Charts Section */
+   .charts {
+     display: flex;
+     justify-content: space-between;
+     margin-top: 20px;
+     flex-wrap: wrap;
+     gap: 20px;
+   }
+   .charts {
+     display: flex;
+     flex-wrap: wrap;
+     justify-content: space-between; /* या center, अगर जरूरत हो */
+     align-items: center; /* Centering fix */
+     gap: 20px;
+   }
+
+   .chart {
+     background: white;
+     padding: 30px;
+     border-radius: 8px;
+     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+     flex: 1;
+     min-width: 300px;
+     text-align: center;
+     position: relative;
+   }
+   .chart .chart-title {
+     font-size: 18px;
+     margin-bottom: 10px;
+   }
+   /* Canvas का आकार */
+   .chart canvas {
+     width: 100% !important;
+     height: 200px !important;
+   }
+  
+ </style>
+
+ <style>
+  .chart2 {
+     background: white;
+     padding: 5px;
+     border-radius: 8px;
+     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+     flex: 1;
+     min-width: 300px;
+     text-align: center;
+     position: relative;
+   }
+   
+  .list-container {
+    max-height: 250px; /* Fix height */
+    height: 250px;
+    overflow-y: auto;  /* Smooth vertical scrolling */
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.holiday-list {
+    margin: 0;
+    padding: 0;
+}
+
+.holiday-list .list-group-item {
+    border: none;
+    font-size: 16px;
+    transition: background 0.3s ease-in-out;
+}
+
+.holiday-list .list-group-item:hover {
+    background: #e9ecef;
+}
+
+.holiday-date {
+    font-weight: bold;
+    color: #241de7;
+}
+
+.holiday-reason {
+    font-style: italic;
+    color: #007bff;
+}
+
+.new-join-item {
+    padding: 10px;
+    transition: background 0.3s ease-in-out;
+}
+
+.new-join-item:hover {
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.employee-img img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border: 2px solid #007bff;
+    padding: 2px;
+}
+
+.employee-details h5 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.employee-details p {
+    font-size: 14px;
+    color: #5b5b5b;
+}
+
+
+ </style>
+ <main>
+       <div class="stats">
+           <div class="card">
+             <h6>Monthly Earning</h6>
+             <h3>$126.45</h3>
+           </div>
+           <div class="card">
+             <h6>Unpaid Earning</h6>
+             <h3>$3,256.67</h3>
+           </div>
+           <div class="card">
+             <h6>Total Downloads</h6>
+             <h3>5,152</h3>
+           </div>
+       </div>
+       
+
+       <div class="charts">
+
+        <div class="col-lg-6 col-md-12 chart">
+          <div class="chart-title">Attendenc Chart</div>
+            <canvas id="pieChart"></canvas>
+        </div>
+
+         <div class="chart">
+           <div class="chart-title">Bar Chart</div>
+           <canvas id="barChart"></canvas>
+         </div>
+        
+         <div class="chart">
+           <div class="chart-title">Line Chart</div>
+           <canvas id="lineChart1"></canvas>
+         </div>
+        
+
+       </div>
+
+     
+       </div>
+     </main>
+     
+
+<script>
+  var presentEmp = {{ Present_emp|default:"0" }};
+  var absentEmp = {{ Absent_emp|default:"0" }};
+  var leaveEmp = {{ Half_Day|default:"0" }};
+
+  // Agar saari values zero hain, to ek small value de denge
+  if (presentEmp == 0 && absentEmp == 0 && leaveEmp == 0) {
+      presentEmp = 0.01;
+      absentEmp = 0.01;
+      leaveEmp = 0.01;
+  }
+
+  var ctx2 = document.getElementById('pieChart').getContext('2d');
+  new Chart(ctx2, {
+      type: 'doughnut',
+      data: {
+          labels: ['At Work', 'Absent', 'Half Day'],
+          datasets: [{
+              data: [presentEmp, absentEmp, leaveEmp],
+              backgroundColor: ['green', 'red', 'orange']
+          }]
+      },
+      options: {
+          responsive: true,
+          maintainAspectRatio: false
+      }
+  });
+</script>
+
+     <script>
+       // Bar Chart
+       const barCtx = document.getElementById('barChart').getContext('2d');
+       const barChart = new Chart(barCtx, {
+         type: 'bar',
+         data: {
+           labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+           datasets: [{
+             label: 'Sales',
+             data: [12, 19, 3, 5, 2, 3],
+             backgroundColor: 'rgba(54, 162, 235, 0.5)',
+             borderColor: 'rgba(54, 162, 235, 1)',
+             borderWidth: 1
+           }]
+         },
+         options: {
+           responsive: true,
+           maintainAspectRatio: false,
+           scales: {
+             y: { beginAtZero: true }
+           }
+         }
+       });
+     
+       // Line Chart 1
+       const lineCtx1 = document.getElementById('lineChart1').getContext('2d');
+       const lineChart1 = new Chart(lineCtx1, {
+         type: 'line',
+         data: {
+           labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+           datasets: [{
+             label: 'Visitors',
+             data: [30, 50, 40, 60, 70, 50, 80],
+             fill: false,
+             borderColor: 'rgba(255, 99, 132, 1)',
+             tension: 0.1
+           }]
+         },
+         options: {
+           responsive: true,
+           maintainAspectRatio: false
+         }
+       });
+     
+       // Line Chart 2
+       const lineCtx2 = document.getElementById('lineChart2').getContext('2d');
+       const lineChart2 = new Chart(lineCtx2, {
+         type: 'line',
+         data: {
+           labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+           datasets: [{
+             label: 'Revenue',
+             data: [15000, 20000, 18000, 22000],
+             fill: false,
+             borderColor: 'rgba(75, 192, 192, 1)',
+             tension: 0.1
+           }]
+         },
+         options: {
+           responsive: true,
+           maintainAspectRatio: false
+         }
+       });
+     </script>
+
+{% endblock %}

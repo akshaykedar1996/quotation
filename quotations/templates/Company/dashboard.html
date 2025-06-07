@@ -1,0 +1,245 @@
+{% extends 'Company/cmp_base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color:rgb(149, 152, 154);
+    }
+    
+    .card {
+        transition: 0.3s;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(135deg,rgb(203, 206, 210),rgb(210, 230, 231));
+        color: white;
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    h6 {
+        font-size: 16px;
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+    
+    h3 {
+        font-size: 28px;
+        font-weight: bold;
+    }
+    
+    canvas {
+        background: white;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .report-box {
+    border-radius: 12px;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.report-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.monthly-report {
+    background: linear-gradient(135deg, #4CAF50, #66BB6A); /* Green Gradient */
+}
+
+.yearly-report {
+    background: linear-gradient(135deg, #4facfe, #00f2fe); /* Blue Gradient */
+}
+
+.yearly {
+    background: linear-gradient(135deg, #4fcffe, #0090fe); /* Blue Gradient */
+}
+
+.profit {
+    color: #09730c; /* Light Green */
+    font-weight: bold;
+}
+
+.loss {
+    color: #ff051e; /* Light Red */
+    font-weight: bold;
+}
+
+</style>
+
+
+<style>
+     .charts {
+     display: flex;
+     justify-content: space-between;
+     margin-top: 20px;
+     flex-wrap: wrap;
+     gap: 20px;
+   }
+   .charts {
+     display: flex;
+     flex-wrap: wrap;
+     justify-content: space-between; /* या center, अगर जरूरत हो */
+     align-items: center; /* Centering fix */
+     gap: 20px;
+   }
+   .card2 {
+     background: white;
+     border-radius: 3px;
+     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+     flex: 1;
+     min-width: 250px;
+     text-align: center;
+     padding: 20px;
+   }
+    .chart2 {
+       background: white;
+       padding: 5px;
+       border-radius: 8px;
+       box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+       flex: 1;
+       min-width: 300px;
+       text-align: center;
+       position: relative;
+     }
+     
+    .list-container {
+      max-height: 250px; /* Fix height */
+      height: 250px;
+      overflow-y: auto;  /* Smooth vertical scrolling */
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 8px;
+  }
+  
+  .holiday-list {
+      margin: 0;
+      padding: 0;
+  }
+  
+  .holiday-list .list-group-item {
+      border: none;
+      font-size: 16px;
+      transition: background 0.3s ease-in-out;
+  }
+  
+  .holiday-list .list-group-item:hover {
+      background: #e9ecef;
+  }
+  
+  .holiday-date {
+      font-weight: bold;
+      color: #241de7;
+  }
+  
+  .holiday-reason {
+      font-style: italic;
+      color: #007bff;
+  }
+  
+  .new-join-item {
+      padding: 10px;
+      transition: background 0.3s ease-in-out;
+  }
+  
+  .new-join-item:hover {
+      background: #f8f9fa;
+      border-radius: 10px;
+  }
+  
+  .employee-img img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border: 2px solid #007bff;
+      padding: 2px;
+  }
+  
+  .employee-details h5 {
+      font-size: 18px;
+      font-weight: bold;
+  }
+  
+  .employee-details p {
+      font-size: 14px;
+      color: #5b5b5b;
+  }
+  
+  
+   </style>
+
+   <style>
+    .card-header {
+    border-bottom: 2px solid #ffffff40; /* Light white border */
+    display: flex;
+    align-items: center;
+    padding: 10px 15px; /* Proper spacing */
+}
+
+
+   </style>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <h6>Monthly Earning</h6>
+            <h3>$126.45</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <h6>Total Employee</h6>
+            <h3>{{ emp_count }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <h6>Total Product</h6>
+            <h3>5,152</h3>
+        </div>
+    </div>
+</div>
+  
+</div>
+
+<script>
+    var ctx1 = document.getElementById('barChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Earnings',
+                data: [12, 19, 3, 5, 2, 3],
+                backgroundColor: '#4facfe'
+            }]
+        }
+    });
+
+    var ctx2 = document.getElementById('pieChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: ['All Employees', 'Check In To Day', 'Check Out To Day'],
+            datasets: [{
+                data: [{{all}}, {{check_in}}, {{check_out}}],
+                backgroundColor: ['blue','green', 'red']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script>
+{% endblock %}

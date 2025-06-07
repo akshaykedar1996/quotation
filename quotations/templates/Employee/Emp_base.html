@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Dashboard{% endblock %}</title>
+
+
+  <!-- Favicon Link -->
+  <link rel="icon" type="image/x-icon" href="/media/company/logos/hrlogo.jpeg">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  
+  <!-- Chart.js Library (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Global Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      /* min-height ताकि लंबा कंटेंट भी दिख सके */
+      min-height: 100vh;
+    }
+    .container {
+      display: flex;
+      width: 100%;
+    }
+    /* Sidebar Styles */
+    .sidebar {
+      width: 250px;
+      background: linear-gradient(45deg, rgba(234, 237, 239, 0.66), rgb(227, 230, 233));
+      color: white;
+      overflow-y: auto;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding-bottom: 20px;
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+
+    .profile {
+      text-align: center;
+      padding: 20px;
+    }
+    .profile-img {
+      height: 150px;
+      width: auto;
+      border-radius: 50%;
+    }
+   
+  
+    /* Content Styles */
+    .content {
+      margin-left: 250px;
+      width: calc(100% - 250px);
+      padding: 20px;
+      transition: margin-left 0.3s ease;
+    }
+  
+    /* Header Styles */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(45deg, rgba(234, 237, 239, 0.66), rgb(198, 203, 207));
+      padding: 10px;
+      border-radius: 4px;
+    }
+    
+    /* Toggle Button Styles */
+    .toggle-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: rgba(0, 5, 10, 0.664);
+        font-size: 24px;
+        cursor: pointer;
+        position: fixed;
+        top: 0;  /* Bilkul upar */
+        left: 0; /* Bilkul left */
+        z-index: 9999; /* Sabse upar */
+        padding: 10px; /* Thoda space de sakte hain */
+    }
+
+ 
+    /* Icons in Header */
+    .icons {
+      display: flex;
+      gap: 5px;
+
+    }
+    
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .icon-btn i {
+      color: #fff;
+      font-size: 20px;
+    }
+   
+  
+        /* Mobile: hide sidebar by default */
+        @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.active {
+        transform: translateX(0);
+      }
+    }
+    @media (max-width: 768px) {
+      .content {
+        margin-left: 0;
+        width: 100%;
+      }
+    }
+    /* @media (max-width: 768px) {
+      .content {
+        margin-left: 0;
+        width: 100%;
+      }
+    } */
+    
+    @media (max-width: 768px) {
+      .toggle-btn {
+        display: block;
+        margin-left: 20px;
+        margin-top: 25px;
+      }
+      
+ 
+      .icons {
+        display: flex;
+        gap: 5px;
+        flex-shrink: 0;      /* आइकन्स को shrink होने से रोकता है */
+        align-self: flex-end;
+              /* ज़रूरत अनुसार margin को adjust करें */
+      }
+
+    }
+
+  
+    .icon-btn {
+  
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 5px; /* Icon aur text ke beech space */
+    }
+
+    .icon-btn i {
+        font-size: 18px;
+    }
+
+    .check-in {
+        background: #28a745; /* Green color */
+    }
+
+    .check-out {
+        background: #dc3545; /* Red color */
+    }
+
+    .icon-btn:hover {
+        opacity: 0.8;
+    }
+
+  </style>
+  <style>
+    .logtime {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100px;  /* Compact width */
+   
+    text-align: center;
+}
+
+#timer {
+    font-size: 16px;
+    font-weight: bold;
+    color: #c50000;
+
+    margin-bottom: 5px;
+}
+
+.custom_button, .custom_button_out {
+    width: 100px;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.custom_button {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 128, 0, 0.2);
+}
+
+.custom_button:hover {
+    background: linear-gradient(135deg, #45a049, #4CAF50);
+    box-shadow: 0 3px 6px rgba(0, 128, 0, 0.3);
+}
+
+.custom_button_out {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: white;
+    box-shadow: 0 2px 4px rgba(255, 0, 0, 0.2);
+}
+
+.custom_button_out:hover {
+    background: linear-gradient(135deg, #d32f2f, #f44336);
+    box-shadow: 0 3px 6px rgba(255, 0, 0, 0.3);
+}
+/* Mobile Screen ke liye Row me Convert */
+@media screen and (max-width: 768px) {
+    .logtime {
+        gap: 5PX;
+        margin-right: -15px;
+        justify-content: space-around; /* Elements ko space de */
+        width: auto; /* Width adjust kare */
+    }
+    
+#timer {
+    font-size: 12px;
+    font-weight: bold;
+    color: #c50000;
+
+    margin-bottom: 1px;
+}
+
+.custom_button, .custom_button_out {
+    width: 80px;
+    padding: 6px;
+    font-size: 10px;
+   
+}
+
+}
+
+
+.sidebar .nav-link {
+    font-size: 16px;
+    padding: 12px 15px;
+    border-radius: 5px;
+    transition: background 0.3s, transform 0.2s;
+}
+.sidebar .nav-link i {
+    margin-right: 10px;
+}
+.sidebar .nav-link:hover {
+    background: linear-gradient(45deg, #007bff, #6c96c4);
+    transform: translateX(5px);
+}
+  </style>
+   <style>
+    /* Modal Background Overlay */
+ /* Camera Modal */
+#cameraModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    width: 40%;
+    height: 80%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translate(-50%, -50%);
+    flex-direction: column;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* Modal Content */
+.modal-content {
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #ff0000;
+}
+
+/* Camera Feed */
+video {
+    width: 100%;
+    height: 90%;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+    object-fit: cover;
+}
+
+/* Capture Button (Mobile Camera Style) */
+#captureButton {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    color: black;
+    border: 5px solid #007bff;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+#captureButton:hover {
+    background: #007bff;
+    color: white;
+}
+@media screen and (max-width: 768px) {
+  #cameraModal {
+  
+    width: 80%;
+    height: 50%;
+   
+}}
+</style>
+</head>
+<body>
+     <!-- Toggle Button for Mobile -->
+     <button class="toggle-btn" id="toggle-btn"><i class="fas fa-bars"></i></button>
+
+  <!-- Sidebar -->
+ 
+
+
+  <!-- Bootstrap Icons CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
+<!-- Sidebar Navigation -->
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-dark sidebar" id="sidebar">
+  <div class="profile">
+    <!-- Base64 image (shortened for brevity) -->
+    {% if Employid.image %}
+        <img src="{{ Employid.image.url }}" alt="User" class="profile-img">
+    {% else %}
+
+      <img src="data:image/png;base64,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" alt="User" class="profile-img">
+    {% endif %}
+  </div>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+            <a href="{% url 'Emp_Dashboard' %}" class="nav-link text-white">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'submit_multiple_entries' %}" class="nav-link text-white">
+                <i class="bi bi-list-check"></i>Required
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{% url 'emp_logout' %}" class="nav-link text-white">
+                <i class="bi bi-list-check"></i>LogOut
+            </a>
+        </li>
+  
+     
+    </ul>
+</div>
+
+<!-- Bootstrap 5 CDN Include -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    
+  
+    <!-- Page Content -->
+    <div class="content">
+        <header>
+           <!-- Camera Modal -->
+     <!-- <div id="cameraModal" style="display: none;">
+      <video id="cameraFeed" autoplay></video>
+      <canvas id="canvas" style="display: none;"></canvas>
+      <button id="captureButton">Capture Photo</button>
+  </div> -->
+     
+            <div>
+            
+            <button class="icon-btn"><i class="fas fa-bell"></i></button>
+            <button class="icon-btn"><i class="fas fa-user"></i></button>
+          </div>
+        </header>
+        {% block content %}{% endblock %}
+    
+    </div>
+  </div> 
+</div>
+  
+  
+  <script>
+    // Toggle sidebar open/close on mobile
+    const toggleBtn = document.getElementById('toggle-btn');
+    const sidebar = document.getElementById('sidebar');
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+  </script>
+</body>
+</html>

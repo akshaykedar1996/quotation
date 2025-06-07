@@ -1,0 +1,46 @@
+{% extends 'Company/cmp_base.html' %}
+{% block title %}Product Needs List{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Product Needs</h2>
+    <a href="{% url 'product_need_create' %}" class="btn btn-success mb-3">Add Product Need</a>
+    <a href="{% url 'generate_invoice_filtered' %}" class="btn btn-primary mb-3">Generate Filtered Invoice</a>
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Employee</th>
+                <th>Site</th>
+                <th>Product</th>
+                <th>Time</th>
+                <th>Qty</th>
+                <th>Rate</th>
+                <th>Amount</th>
+                <th>Message Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for need in needs %}
+            <tr>
+                <td>{{ need.employee }}</td>
+                <td>{{ need.site }}</td>
+                <td>{{ need.product }}</td>
+                <td>{{ need.timestamp }}</td>
+                <td>{{ need.qty }}</td>
+                <td>{{ need.rate }}</td>
+                <td>{{ need.amount }}</td>
+                <td>{{ need.msg_status|yesno:"Yes,No" }}</td>
+                <td>
+                    <a href="{% url 'product_need_update' need.id %}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{% url 'product_need_delete' need.id %}" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9" class="text-center">No records found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

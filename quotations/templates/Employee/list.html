@@ -1,0 +1,37 @@
+{% extends 'Employee/Emp_base.html' %}
+{% block title %}Product Needs{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Product Need List</h2>
+    <a href="{% url 'product_need_create' %}" class="btn btn-primary mb-3">+ Add New</a>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Rate</th>
+                <th>Amount</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for need in needs %}
+            <tr>
+                <td>{{ need.employee }}</td>
+                <td>{{ need.product }}</td>
+                <td>{{ need.qty }}</td>
+                <td>{{ need.rate }}</td>
+                <td>{{ need.amount }}</td>
+                <td>
+                    <a href="{% url 'product_need_update' need.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'product_need_delete' need.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">No product needs found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

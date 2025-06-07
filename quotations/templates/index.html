@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business One ERP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .hero {
+            background: linear-gradient(to right, #0052D4, #4364F7, #6FB1FC);
+            color: white;
+            padding: 60px 0;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+        }
+        .features {
+            padding: 60px 0;
+        }
+        .feature-box {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+        .feature-box:hover {
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        .request-demo {
+            background: #f8f9fa;
+            padding: 60px 0;
+        }
+        .footer {
+            background: #222;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header class="hero text-center">
+        <div class="container">
+            <h1>Business One - Affordable ERP Solution</h1>
+            <p>Streamline your business operations with SAP Business One.</p>
+            <a href="#demo" class="btn btn-light">Request a Demo</a>
+            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 5px;">
+                <a href="{% url 'cmp_login' %}" class="btn btn-light">Admin</a>
+                <a href="{% url 'emp_login' %}" class="btn btn-light">Employee</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="features text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <h3>Financial Management</h3>
+                        <p>Optimize your business finances efficiently.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <h3>Supply Chain Management</h3>
+                        <p>Ensure smooth inventory and procurement processes.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <h3>Sales & Customer Management</h3>
+                        <p>Enhance customer relationships and boost sales.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="demo" class="request-demo text-center">
+        <div class="container">
+            <h2>Request a Demo</h2>
+            <form class="row g-3 mt-4">
+                <div class="col-md-6">
+                    <input type="text" class="form-control" placeholder="Your Name" required>
+                </div>
+                <div class="col-md-6">
+                    <input type="email" class="form-control" placeholder="Company Email" required>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" placeholder="Company Name" required>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" placeholder="Phone Number" required>
+                </div>
+                <div class="col-md-12">
+                    <textarea class="form-control" rows="3" placeholder="Message" required></textarea>
+                </div>
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary w-100">Submit</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 SAP Business One. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

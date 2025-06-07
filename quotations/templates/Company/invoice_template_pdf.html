@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            margin: 40px;
+        }
+
+        .header {
+            text-align: center;
+        }
+
+        .company-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .company-address {
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .invoice-details, .client-details {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .invoice-details td, .client-details td {
+            padding: 4px;
+            vertical-align: top;
+        }
+
+        .invoice-details {
+            text-align: right;
+        }
+
+        table.invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+
+        table.invoice-table th, table.invoice-table td {
+            border: 1px solid #000;
+            padding: 6px;
+            text-align: left;
+        }
+
+        table.invoice-table th {
+            background-color: #d1e4f3;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .totals {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .totals td {
+            padding: 6px;
+            border: 1px solid #000;
+        }
+
+        .note {
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        .signature {
+            margin-top: 40px;
+            text-align: right;
+        }
+
+        .terms {
+            margin-top: 10px;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="company-name">GLAZEROCKS PVT LTD</div>
+        <div class="company-address">
+                OFFICE NO 206-207, 2ND FLOOR, SONIGARA LANDMARK,<br>
+                CHATRAPATI CHOWK RD, DYNASTY SOCIETY, KASPATE WASTI,<br>
+                WAKAD, PUNE 411057<br>
+                PH. NO: 8007879217
+        </div>
+    </div>
+
+    <table class="client-details">
+        <tr>
+            <td>
+                <strong>Date:</strong> {{ date }}
+            </td>
+            <td class="text-right">
+                <strong>Invoice No.:</strong> {{ invoice_no }}<br>         
+            </td>
+        </tr>
+    </table>
+
+    <table class="invoice-table">
+        <thead>
+            <tr>
+                <th>Sr.</th>
+                <th>Product</th>
+                <th>QTY</th>
+                <th>Rate</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.product }}</td>
+                <td>{{ item.qty }}</td>
+                <td class="text-right">{{ item.rate }}</td>
+                <td class="text-right">{{ item.amount }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="totals">
+        <tr>
+            <td class="text-right" style="width: 80%;"><strong>SUB TOTAL</strong></td>
+            <td class="text-right" style="width: 20%;">{{ total }}</td>
+        </tr>
+        <tr>
+            <td class="text-right"><strong>CR/DR NOTE</strong></td>
+            <td class="text-right">0.00</td>
+        </tr>
+        <tr>
+            <td class="text-right"><strong>GRAND TOTAL</strong></td>
+            <td class="text-right">{{ total }}</td>
+        </tr>
+    </table>
+
+
+    <div class="terms">Terms & Conditions</div>
+
+    <div class="signature">
+        For GLAZEROCKS PVT LTD<br><br><br>
+        Authorised signatory
+    </div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{% extends 'Company/cmp_base.html' %}
+
+{% block title %}Invoice List{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Client List</h2>
+    <a href="{% url 'add_client' %}" class="btn btn-primary">Add New Client</a>
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Client ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Company</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in clients %}
+            <tr>
+                <td>{{ client.client_id }}</td>
+                <td>{{ client.name }}</td>
+                <td>{{ client.email }}</td>
+                <td>{{ client.phone }}</td>
+                <td>{{ client.company }}</td>
+                <td>{{ client.created_at|date:"d-m-Y" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
